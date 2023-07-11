@@ -1,8 +1,12 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,14 +28,15 @@ Route::get('/', function () {
     ]);
 });
 
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-])->group(function () {
-    // auth()->user()->assignRole('admin');
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
-
+])->get('/dashboard', function(){
+    /**@var User $user */
+    $user =  auth()->user();
+    $user->assignRole('admin');
+    return Inertia::render('Dashboard');
+})->name('dashboard');
+     
